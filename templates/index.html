@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNG to WebP Converter</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="theme-blue">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-body text-center p-4">
+                        <h1 class="mb-3">PNG to WebP Converter</h1>
+                        <p class="text-muted mb-4">Drag and drop your PNG files to convert them to WebP without losing quality</p>
+                        
+                        <div class="settings-menu position-absolute top-0 end-0 m-3 dropdown">
+                            <button class="btn btn-sm" id="settings-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-gear-fill"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end p-3 shadow" style="width: 250px;">
+                                <li>
+                                    <h6 class="dropdown-header">Theme</h6>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="theme-toggle">
+                                        <label class="form-check-label" for="theme-toggle">Dark Mode</label>
+                                    </div>
+                                </li>
+                                
+                                <li>
+                                    <h6 class="dropdown-header">Accent Color</h6>
+                                    <div class="d-flex gap-2 mb-2">
+                                        <button class="btn btn-sm color-btn color-blue active" data-theme="blue"></button>
+                                        <button class="btn btn-sm color-btn color-green" data-theme="green"></button>
+                                        <button class="btn btn-sm color-btn color-orange" data-theme="orange"></button>
+                                        <button class="btn btn-sm color-btn color-red" data-theme="red"></button>
+                                        <button class="btn btn-sm color-btn color-violet" data-theme="violet"></button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div id="drop-area" class="mb-4">
+                            <div class="drop-text">
+                                <i class="bi bi-cloud-arrow-up display-1 mb-3 accent-color"></i>
+                                <p>Drag your PNG files here<br>or<br>Click to select</p>
+                                <input type="file" id="fileInput" accept=".png" multiple class="d-none">
+                            </div>
+                        </div>
+                        
+                        <div id="progress-container" class="mb-4 d-none">
+                            <div class="progress mb-3" style="height: 20px;">
+                                <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <p id="progress-text" class="text-muted">Processing files...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="summary-container" class="card border-0 shadow mb-4 d-none">
+                    <div class="card-body p-4">
+                        <h3 class="mb-3">Total Space Saving</h3>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Original: <span id="total-original-size">0 KB</span></span>
+                            <span>Converted: <span id="total-converted-size">0 KB</span></span>
+                            <span>Saved: <span id="total-saved" class="fw-bold accent-color">0 KB (0%)</span></span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div id="total-progress-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="results-container" class="d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="mb-0">Results</h2>
+                        <div class="d-flex gap-2">
+                            <button id="reset-btn" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                            </button>
+                            <button id="download-all-btn" class="btn btn-primary">
+                                <i class="bi bi-download me-2"></i>Download All
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow">
+                        <div class="list-group list-group-flush" id="results-list">
+                            <!-- Results will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

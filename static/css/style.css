@@ -1,0 +1,199 @@
+:root {
+    /* Blue theme */
+    --blue-primary: #0d6efd;
+    --blue-primary-rgb: 13, 110, 253;
+    --blue-hover: #0b5ed7;
+    
+    /* Green theme */
+    --green-primary: #198754;
+    --green-primary-rgb: 25, 135, 84;
+    --green-hover: #157347;
+    
+    /* Orange theme */
+    --orange-primary: #fd7e14;
+    --orange-primary-rgb: 253, 126, 20;
+    --orange-hover: #e56c0a;
+    
+    /* Red theme */
+    --red-primary: #dc3545;
+    --red-primary-rgb: 220, 53, 69;
+    --red-hover: #bb2d3b;
+    
+    /* Violet theme */
+    --violet-primary: #6f42c1;
+    --violet-primary-rgb: 111, 66, 193;
+    --violet-hover: #5e37a6;
+}
+
+[data-bs-theme="dark"] {
+    --bs-body-bg: #121212;
+    --bs-body-color: #e0e0e0;
+    --bs-card-bg: #1e1e1e;
+    --bs-dark: #121212;
+    --bs-light: #2a2a2a;
+}
+
+[data-bs-theme="light"] {
+    --bs-body-bg: #f8f9fa;
+    --bs-body-color: #212529;
+    --bs-card-bg: #ffffff;
+    --bs-dark: #212529;
+    --bs-light: #f8f9fa;
+}
+
+body {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card {
+    background-color: var(--bs-card-bg);
+    transition: background-color 0.3s ease;
+}
+
+#drop-area {
+    border: 3px dashed #6c757d;
+    border-radius: 10px;
+    padding: 60px 20px;
+    text-align: center;
+    background-color: rgba(108, 117, 125, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#drop-area.highlight {
+    border-color: var(--theme-primary);
+    background-color: rgba(var(--theme-primary-rgb), 0.1);
+}
+
+.file-info {
+    overflow: hidden;
+}
+
+.file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.error-message {
+    color: var(--bs-danger);
+}
+
+/* Theme color classes */
+.theme-blue {
+    --theme-primary: var(--blue-primary);
+    --theme-primary-rgb: var(--blue-primary-rgb);
+    --theme-hover: var(--blue-hover);
+}
+
+.theme-green {
+    --theme-primary: var(--green-primary);
+    --theme-primary-rgb: var(--green-primary-rgb);
+    --theme-hover: var(--green-hover);
+}
+
+.theme-orange {
+    --theme-primary: var(--orange-primary);
+    --theme-primary-rgb: var(--orange-primary-rgb);
+    --theme-hover: var(--orange-hover);
+}
+
+.theme-red {
+    --theme-primary: var(--red-primary);
+    --theme-primary-rgb: var(--red-primary-rgb);
+    --theme-hover: var(--red-hover);
+}
+
+.theme-violet {
+    --theme-primary: var(--violet-primary);
+    --theme-primary-rgb: var(--violet-primary-rgb);
+    --theme-hover: var(--violet-hover);
+}
+
+/* Apply theme colors to elements */
+.btn-primary {
+    background-color: var(--theme-primary);
+    border-color: var(--theme-primary);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--theme-hover);
+    border-color: var(--theme-hover);
+}
+
+.progress-bar {
+    background-color: var(--theme-primary);
+}
+
+.accent-color {
+    color: var(--theme-primary) !important;
+}
+
+/* Color selector buttons */
+.color-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.color-btn.active {
+    border-color: #fff;
+    transform: scale(1.1);
+}
+
+.color-blue {
+    background-color: var(--blue-primary);
+}
+
+.color-green {
+    background-color: var(--green-primary);
+}
+
+.color-orange {
+    background-color: var(--orange-primary);
+}
+
+.color-red {
+    background-color: var(--red-primary);
+}
+
+.color-violet {
+    background-color: var(--violet-primary);
+}
+
+/* Thumbnail preview */
+.thumbnail-preview {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+}
+
+[data-bs-theme="dark"] .thumbnail-preview {
+    background-color: #2a2a2a;
+}
+
+/* Reset button styling */
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Add animation for reset icon */
+.bi-arrow-counterclockwise {
+    transition: transform 0.3s ease;
+}
+
+#reset-btn:hover .bi-arrow-counterclockwise {
+    transform: rotate(-180deg);
+}
