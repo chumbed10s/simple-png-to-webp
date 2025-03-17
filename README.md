@@ -47,6 +47,8 @@ python app.py
 - Convert multiple PNG files at once.
 - Download the converted files.
 - Download the converted files individually.
+- Pick the color and theme that suits you best. (Dark | Light) (Blue | Green | Orange | Red | Purple)
+![Color Picker](https://cdn.screenit.app/uploads/04sBE2Y4.png)
 
 ## Contributing
 
