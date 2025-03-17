@@ -141,6 +141,7 @@ body {
 }
 
 .color-btn.active {
+    background-color: var(--theme-primary);
     border-color: #fff;
     transform: scale(1.1);
 }
