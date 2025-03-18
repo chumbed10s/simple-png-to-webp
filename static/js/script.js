@@ -159,6 +159,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Reset converted files array
             convertedFiles = [];
+            
+            // Clear file selection
+            clearFileSelection();
         }
     });
     
@@ -406,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Clear selection after processing
-        selectedFiles = [];
+        clearFileSelection();
     }
     
     // Download all files
