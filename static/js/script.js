@@ -109,7 +109,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Convert button
     convertBtn.addEventListener('click', () => {
         if (selectedFiles.length === 0) return;
-        
+
+        if (convertedFiles.length > 0) {
+            // Show confirmation dialog
+            if (!confirm('Are you sure you want to convert these files? This will delete all converted files.')) {
+                return;
+            }
+        }
         // Hide files preview
         filesPreviewContainer.classList.add('d-none');
         
