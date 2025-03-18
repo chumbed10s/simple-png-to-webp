@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const resetBtn = document.getElementById('reset-btn');
     const themeToggle = document.getElementById('theme-toggle');
     const colorButtons = document.querySelectorAll('.color-btn');
+
+    // Preview elements before conversion
+    const filesPreviewContainer = document.getElementById('files-preview-container');
+    const filesPreviewList = document.getElementById('files-preview-list');
+    const filesCount = document.getElementById('files-count');
+    const convertBtn = document.getElementById('convert-btn');
+    const clearSelectionBtn = document.getElementById('clear-selection-btn');
+    
+    // Store selected files
+    let selectedFiles = [];
     
     // Summary elements
     const totalOriginalSize = document.getElementById('total-original-size');
@@ -91,6 +101,30 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add(`theme-${color}`);
     }
     
+    // Clear files to convert section
+    clearSelectionBtn.addEventListener('click', () => {
+        clearFileSelection();
+    });
+
+    // Convert button
+    convertBtn.addEventListener('click', () => {
+        if (selectedFiles.length === 0) return;
+        
+        // Hide files preview
+        filesPreviewContainer.classList.add('d-none');
+        
+        // Process the files
+        processFiles(selectedFiles);
+    });
+    
+    // Function to clear file selection
+    function clearFileSelection() {
+        selectedFiles = [];
+        filesPreviewList.innerHTML = '';
+        filesCount.textContent = '0';
+        filesPreviewContainer.classList.add('d-none');
+    }
+
     // Store converted files for batch download
     let convertedFiles = [];
     
@@ -171,42 +205,119 @@ document.addEventListener('DOMContentLoaded', function() {
     
     fileInput.addEventListener('change', function() {
         handleFiles(this.files);
-    });
-    
-    // Download all files
-    downloadAllBtn.addEventListener('click', () => {
-        if (convertedFiles.length === 0) return;
-        
-        fetch('/download-all', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ files: convertedFiles })
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.blob();
-            }
-            throw new Error('Network response was not ok');
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'webp_files.zip';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            console.error('Error downloading files:', error);
-            alert('Error downloading files. Please try again.');
-        });
-    });
+    });  
     
     function handleFiles(files) {
+        if (files.length === 0) return;
+        
+        // Process the new files
+        Array.from(files).forEach(file => {
+            if (!file.name.toLowerCase().endsWith('.png')) {
+                // Create preview for invalid file
+                const fileItem = document.createElement('div');
+                fileItem.className = 'list-group-item';
+                fileItem.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="file-info">
+                            <h5 class="mb-1 file-name">${file.name}</h5>
+                            <p class="mb-0 error-message">Error: Only PNG files are allowed</p>
+                        </div>
+                    </div>
+                `;
+                filesPreviewList.appendChild(fileItem);
+            } else {
+                // Check if the file is already in the list to avoid duplicates
+                const isDuplicate = selectedFiles.some(f => 
+                    f.name === file.name && f.size === file.size && f.lastModified === file.lastModified
+                );
+                
+                if (!isDuplicate) {
+                    // Create a temporary placeholder
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'list-group-item';
+                    fileItem.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="thumbnail-container me-3" style="width: 50px; height: 50px; background-color: #f0f0f0; border-radius: 4px; display: flex; justify-content: center; align-items: center;">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                                <div class="file-info">
+                                    <h5 class="mb-1 file-name">${file.name}</h5>
+                                    <p class="mb-0 text-muted">Size: ${formatSize(file.size)}</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger remove-file-btn">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    `;
+                    filesPreviewList.appendChild(fileItem);
+                    
+                    // Create file reader to generate thumbnail preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.onload = function() {
+                            // Replace loading spinner with actual thumbnail
+                            const thumbnailContainer = fileItem.querySelector('.thumbnail-container');
+                            thumbnailContainer.innerHTML = '';
+                            thumbnailContainer.style.padding = '0';
+                            
+                            // Create thumbnail with proper sizing
+                            const thumbnail = document.createElement('img');
+                            thumbnail.src = e.target.result;
+                            thumbnail.className = 'thumbnail-preview';
+                            thumbnail.style.width = '100%';
+                            thumbnail.style.height = '100%';
+                            thumbnail.style.objectFit = 'contain';
+                            thumbnailContainer.appendChild(thumbnail);
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Add functionality to the remove button
+                    const removeBtn = fileItem.querySelector('.remove-file-btn');
+                    removeBtn.addEventListener('click', function() {
+                        // Remove from selected files list
+                        const index = selectedFiles.findIndex(f => 
+                            f.name === file.name && f.size === file.size && f.lastModified === file.lastModified
+                        );
+                        if (index > -1) {
+                            selectedFiles.splice(index, 1);
+                        }
+                        
+                        // Remove visual element
+                        fileItem.remove();
+                        
+                        // Update counter
+                        filesCount.textContent = selectedFiles.length.toString();
+                        
+                        // Hide container if no files
+                        if (selectedFiles.length === 0) {
+                            filesPreviewContainer.classList.add('d-none');
+                        }
+                    });
+                    
+                    // Add to valid files
+                    selectedFiles.push(file);
+                }
+            }
+        });
+        
+        // Update files count
+        filesCount.textContent = selectedFiles.length.toString();
+        
+        // Show files preview container if we have any files
+        if (selectedFiles.length > 0) {
+            filesPreviewContainer.classList.remove('d-none');
+        }
+    }
+    
+    // function to process files after confirmation
+    function processFiles(files) {
         if (files.length === 0) return;
         
         // Reset converted files array and summary stats
@@ -234,25 +345,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Convert each file
         Array.from(files).forEach(file => {
-            if (!file.name.toLowerCase().endsWith('.png')) {
-                // Show error for non-PNG files
-                const errorItem = document.createElement('div');
-                errorItem.className = 'list-group-item';
-                errorItem.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="file-info">
-                            <h5 class="mb-1 file-name">${file.name}</h5>
-                            <p class="mb-0 error-message">Error: Only PNG files are allowed</p>
-                        </div>
-                    </div>
-                `;
-                resultsList.appendChild(errorItem);
-                
-                filesProcessed++;
-                updateProgress(filesProcessed, totalFiles);
-                return;
-            }
-            
             convertFile(file, function(result) {
                 // Create result element
                 const resultItem = document.createElement('div');
@@ -312,8 +404,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateProgress(filesProcessed, totalFiles);
             });
         });
+        
+        // Clear selection after processing
+        selectedFiles = [];
     }
     
+    // Download all files
+    downloadAllBtn.addEventListener('click', () => {
+        if (convertedFiles.length === 0) return;
+        
+        fetch('/download-all', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ files: convertedFiles })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.blob();
+            }
+            throw new Error('Network response was not ok');
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'webp_files.zip';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Error downloading files:', error);
+            alert('Error downloading files. Please try again.');
+        });
+    });
+    
+
     function convertFile(file, callback) {
         const formData = new FormData();
         formData.append('file', file);

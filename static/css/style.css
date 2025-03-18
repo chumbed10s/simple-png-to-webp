@@ -198,3 +198,36 @@ body {
 #reset-btn:hover .bi-arrow-counterclockwise {
     transform: rotate(-180deg);
 }
+
+/* Files preview styles */
+#files-preview-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#files-preview-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#files-preview-list::-webkit-scrollbar-thumb {
+    background-color: var(--theme-primary);
+    border-radius: 4px;
+}
+
+#files-preview-list::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+#files-preview-list .list-group-item {
+    border-left: none;
+    border-right: none;
+}
+
+#files-preview-list .list-group-item:first-child {
+    border-top: none;
+}
+
+#files-preview-list .list-group-item:last-child {
+    border-bottom: none;
+}
+
